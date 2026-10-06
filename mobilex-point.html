@@ -1,0 +1,1572 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobilex Point — Buy Sell Exchange</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f9;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--primary:#1e5cf5;--green:#059669;--red:#dc2626;--amber:#d97706}
+[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;--border:#334155}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Hind Siliguri',sans-serif}
+body{background:var(--bg);color:var(--text);font-size:14px;transition:.2s}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:var(--card);border-right:1px solid var(--border);position:fixed;top:0;bottom:0;left:0;z-index:40;transform:translateX(-100%);transition:.3s;display:flex;flex-direction:column;overflow-y:auto}
+.sidebar.open{transform:translateX(0)}
+@media(min-width:900px){.sidebar{transform:translateX(0)}}
+.sb-head{padding:14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:9px}
+.logo-icon{width:36px;height:36px;background:var(--primary);color:#fff;border-radius:11px;display:grid;place-items:center;font-weight:700;font-size:16px}
+.logo b{display:block;font-size:14px;color:var(--text)}
+.logo small{color:var(--muted);font-size:10px}
+.nav{padding:8px;flex:1}
+.nav button{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);text-align:left;margin-bottom:2px;font-family:inherit}
+.nav button:hover{background:rgba(30,92,245,.08)}
+.nav button.active{background:var(--primary);color:#fff}
+.sb-foot{padding:10px 14px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);line-height:1.7}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+@media(min-width:900px){.main{margin-left:250px}}
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:20}
+.header h1{font-size:15px;font-weight:700}
+.header p{font-size:10px;color:var(--muted)}
+.menu-btn{background:var(--bg);border:none;padding:8px;border-radius:9px;cursor:pointer;color:var(--text);font-size:16px}
+@media(min-width:900px){.menu-btn{display:none}}
+.icon-btn{background:var(--bg);border:none;padding:8px;border-radius:9px;cursor:pointer;color:var(--text);font-size:14px}
+.content{padding:14px;flex:1;min-width:0}
+.card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;margin-bottom:12px}
+.grid{display:grid;gap:10px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stat-lbl{font-size:11px;color:var(--muted);margin-bottom:4px}
+.stat-val{font-size:20px;font-weight:700}
+.stat-val.g{color:var(--green)}
+.stat-val.r{color:var(--red)}
+.stat-val.a{color:var(--amber)}
+.stat-hint{font-size:10px;color:var(--muted);margin-top:2px;opacity:.8}
+h2{font-size:16px;font-weight:700;margin-bottom:10px}
+h3{font-size:14px;font-weight:600;margin-bottom:8px}
+label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
+input,select,textarea{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;background:var(--card);color:var(--text)}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,92,245,.13)}
+.btn{padding:8px 14px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:.15s;justify-content:center}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#1747e1}
+.btn-ghost{background:var(--bg);color:var(--text)}
+.btn-ghost:hover{background:rgba(30,92,245,.1)}
+.btn-success{background:var(--green);color:#fff}
+.btn-danger{background:var(--red);color:#fff}
+.btn-warn{background:var(--amber);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:9px 6px;border-bottom:1px solid var(--border);color:var(--muted);font-weight:600;font-size:11px;white-space:nowrap}
+td{padding:9px 6px;border-bottom:1px solid var(--border)}
+tr:hover td{background:rgba(30,92,245,.03)}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600}
+.b-gray{background:rgba(100,116,139,.15);color:var(--muted)}
+.b-green{background:rgba(5,150,105,.15);color:var(--green)}
+.b-red{background:rgba(220,38,38,.15);color:var(--red)}
+.b-blue{background:rgba(30,92,245,.15);color:var(--primary)}
+.b-amber{background:rgba(217,119,6,.15);color:var(--amber)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:grid;place-items:center;padding:10px;overflow-y:auto}
+.modal{background:var(--card);border-radius:14px;width:100%;max-width:640px;box-shadow:0 20px 40px rgba(0,0,0,.25);margin:auto;max-height:92vh;overflow-y:auto}
+.modal.wide{max-width:900px}
+.modal-head{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--card);z-index:1;border-radius:14px 14px 0 0}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-body{padding:16px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.form-grid .full{grid-column:1/-1}
+.form-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:6px;flex-wrap:wrap}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:11px 20px;border-radius:11px;font-size:13px;z-index:100;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90%;text-align:center}
+.loading{position:fixed;top:0;left:0;right:0;height:3px;background:var(--primary);animation:pl 1s infinite;z-index:200}
+@keyframes pl{50%{opacity:.3}}
+.empty{text-align:center;padding:24px;color:var(--muted);font-size:13px}
+.flex-b{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mb-3{margin-bottom:10px}
+.search{position:relative;flex:1;min-width:150px}
+.search input{padding-left:32px}
+.search::before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;z-index:1;opacity:.6}
+.tabs{display:flex;gap:3px;background:var(--bg);border-radius:10px;padding:3px;overflow-x:auto}
+.tabs button{border:none;background:transparent;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;white-space:nowrap}
+.tabs button.active{background:var(--card);color:var(--primary);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.info-box{background:rgba(30,92,245,.06);border-radius:9px;padding:11px;margin:7px 0;font-size:12px}
+.info-box .row{display:flex;justify-content:space-between;padding:3px 0}
+.warn-box{background:rgba(217,119,6,.12);border:1px solid rgba(217,119,6,.28);color:var(--amber);padding:11px;border-radius:9px;font-size:12px;margin-bottom:10px}
+.alert-box{background:rgba(220,38,38,.08);border-left:4px solid var(--red);padding:11px;border-radius:8px;margin-bottom:10px;font-size:12px}
+.chart{display:flex;align-items:flex-end;gap:5px;height:170px;padding-top:8px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%}
+.chart .bg{flex:1;width:100%;background:rgba(30,92,245,.08);border-radius:7px 7px 0 0;position:relative;display:flex;align-items:flex-end;min-height:80px}
+.chart .fill{width:100%;background:linear-gradient(to top,var(--primary),#60a5fa);border-radius:7px 7px 0 0;transition:.3s;min-height:2px}
+.chart .lbl{font-size:9px;color:var(--muted)}
+.chart .val{font-size:9px;color:var(--text);font-weight:600;white-space:nowrap}
+.pay-btn{padding:7px;border-radius:7px;border:2px solid var(--border);background:var(--card);color:var(--text);font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;flex:1}
+.pay-btn.active{border-color:var(--primary);background:rgba(30,92,245,.1);color:var(--primary)}
+.bulk-item{background:var(--bg);border-radius:10px;padding:11px;margin-bottom:9px;border:1px solid var(--border)}
+.bulk-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bulk-head b{font-size:13px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+/* Print */
+@media print{
+  body{background:#fff}
+  .sidebar,.header,.content>.card:not(.print-this),.no-print,.btn,.btn-bar{display:none!important}
+  .modal-bg{position:static;background:#fff;padding:0}
+  .modal{box-shadow:none;max-height:none;max-width:100%;border:none}
+  .modal-head{display:none}
+  .modal-body{padding:0}
+  .print-only{display:block!important}
+  @page{size:A4;margin:10mm}
+}
+.print-only{display:none}
+/* Invoice print */
+.invoice{background:#fff;color:#000;padding:20px;font-family:'Hind Siliguri',sans-serif;max-width:800px;margin:0 auto}
+.inv-head{text-align:center;border-bottom:3px double #000;padding-bottom:12px;margin-bottom:12px}
+.inv-head h1{font-size:26px;color:#1e5cf5;font-weight:700;letter-spacing:1px}
+.inv-head .sub{font-size:12px;color:#475569;letter-spacing:2px;margin-top:2px}
+.inv-head .contact{font-size:11px;color:#64748b;margin-top:5px;line-height:1.6}
+.inv-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px dotted #cbd5e1}
+.inv-section{font-size:12px;font-weight:700;background:#1e293b;color:#fff;padding:5px 10px;border-radius:5px;margin:10px 0 8px;letter-spacing:1px}
+.inv-terms{font-size:10px;line-height:1.8;background:#fef9f0;border:1px solid #fed7aa;border-radius:6px;padding:10px;margin-top:10px}
+.inv-terms ol{padding-left:16px}
+.inv-sign{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
+.inv-sign .box{text-align:center;border-top:2px solid #000;padding-top:5px;font-size:11px;font-weight:600;color:#334155}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo } = React;
+
+/* ==========================================================
+   ⚙️ আপনার Web App URL এখানে বসান (ধাপ ৩ থেকে)
+   ========================================================== */
+const API_URL = "https://script.google.com/macros/s/AKfycbxENicUoYo8pUAtRVeBRl5zC_xNYiCE1jVTgHKNiq8eQc0B06qw4CspgPluchTIp7eiQw/exec";
+/* ========================================================== */
+
+const tk = n => "৳" + Number(n||0).toLocaleString("en-IN");
+const todayISO = () => new Date().toISOString().slice(0,10);
+const todayFormatted = () => new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+
+const api = {
+  async getAll() {
+    const r = await fetch(API_URL + "?action=getAll");
+    return (await r.json());
+  },
+  async post(action, data) {
+    const r = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action, data })
+    });
+    return await r.json();
+  }
+};
+
+const BRANDS = ["Samsung","Xiaomi","Redmi","Poco","Oppo","Vivo","Realme","OnePlus","Apple","Nokia","Infinix","Tecno","Itel","Walton","Symphony","Motorola","Huawei","Honor","Google Pixel","Other"];
+const VARIANTS = ["CN","INT","IND INT","BD OFFICIAL","Other"];
+const CONDITIONS = ["New","Good","Average","Bad"];
+const PAY_METHODS = ["bKash","Nagad","Rocket","Upay","Bank"];
+const EXPENSE_CATEGORIES = ["Shop Rent","Electricity","Salary","Transport","Mobile Recharge","Repair","Packaging","Zakat","Other"];
+
+/* ========== SIDEBAR ========== */
+function Sidebar({ page, setPage, open, setOpen, theme, toggleTheme, alertCount }) {
+  const links = [
+    {k:"dashboard", l:"🏠 Dashboard"},
+    {k:"buy", l:"📥 Buy Phone"},
+    {k:"sell", l:"📤 Sell Phone"},
+    {k:"exchange", l:"🔄 Exchange"},
+    {k:"inventory", l:"📦 Inventory"},
+    {k:"customers", l:"👥 Customers"},
+    {k:"expenses", l:"💸 Expenses"},
+    {k:"reports", l:"📊 Reports"},
+    {k:"settings", l:"⚙️ Settings"}
+  ];
+  return (
+    <>
+      {open && <div onClick={()=>setOpen(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.4)",zIndex:30}}/>}
+      <aside className={"sidebar " + (open?"open":"")}>
+        <div className="sb-head">
+          <div className="logo">
+            <div className="logo-icon">M</div>
+            <div><b>Mobilex Point</b><small>Buy Sell Exchange</small></div>
+          </div>
+          <button className="icon-btn" onClick={toggleTheme}>{theme==="dark"?"☀️":"🌙"}</button>
+        </div>
+        <nav className="nav">
+          {links.map(l => (
+            <button key={l.k} className={page===l.k?"active":""} onClick={()=>{setPage(l.k);setOpen(false);}}>
+              {l.l} {l.k==="inventory" && alertCount>0 && <span className="badge b-red" style={{marginLeft:"auto"}}>{alertCount}</span>}
+            </button>
+          ))}
+        </nav>
+        <div className="sb-foot">
+          📍 Teribazar, Netrakona<br/>
+          ☎ 01601776617<br/>
+          ☎ 01915776617
+        </div>
+      </aside>
+    </>
+  );
+}
+
+const Card = ({children, className=""}) => <div className={"card "+className}>{children}</div>;
+const Label = ({children}) => <label>{children}</label>;
+const Modal = ({open, onClose, title, children, wide}) => {
+  if(!open) return null;
+  return (
+    <div className="modal-bg" onClick={e=>{if(e.target===e.currentTarget) onClose();}}>
+      <div className={"modal"+(wide?" wide":"")}>
+        <div className="modal-head">
+          <h3>{title}</h3>
+          <button className="icon-btn" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">{children}</div>
+      </div>
+    </div>
+  );
+};
+const Stat = ({label, value, hint, color}) => (
+  <Card>
+    <div className="stat-lbl">{label}</div>
+    <div className={"stat-val "+(color||"")}>{value}</div>
+    {hint && <div className="stat-hint">{hint}</div>}
+  </Card>
+);
+
+/* ========== MAIN APP ========== */
+function App() {
+  const [data, setData] = useState({inventory:[],sales:[],exchanges:[],customers:[],expenses:[],settings:[]});
+  const [page, setPage] = useState("dashboard");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState("");
+  const [theme, setTheme] = useState(()=>localStorage.getItem("mpx-theme")||"light");
+
+  useEffect(()=>{
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("mpx-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t=>t==="dark"?"light":"dark");
+  const showToast = msg => { setToast(msg); setTimeout(()=>setToast(""), 3500); };
+
+  const reload = async () => {
+    setLoading(true);
+    try {
+      const r = await api.getAll();
+      if(r.success) setData(r.data);
+      else showToast("❌ " + (r.error||"Load failed"));
+    } catch(e) { showToast("❌ " + e.message); }
+    setLoading(false);
+  };
+
+  useEffect(()=>{ reload(); }, []);
+
+  const notify = (ok, msg) => { showToast((ok?"✅ ":"❌ ") + msg); if(ok) setTimeout(reload, 600); };
+
+  const addPhone = async d => { setSaving(true); const r = await api.post("addPhone", d); setSaving(false); notify(r.success, r.success?"Local phone added":"Failed: "+r.error); return r; };
+  const addBulkPhones = async d => { setSaving(true); const r = await api.post("addBulkPhones", d); setSaving(false); notify(r.success, r.success?(r.count+" phones added"):"Failed: "+r.error); return r; };
+  const addSale = async d => { setSaving(true); const r = await api.post("addSale", d); setSaving(false); notify(r.success, r.success?"Sale completed":"Failed: "+r.error); return r; };
+  const addExchange = async d => { setSaving(true); const r = await api.post("addExchange", d); setSaving(false); notify(r.success, r.success?"Exchange saved":"Failed: "+r.error); return r; };
+  const addExpense = async d => { setSaving(true); const r = await api.post("addExpense", d); setSaving(false); notify(r.success, r.success?"Expense added":"Failed: "+r.error); return r; };
+  const del = async (sheet, id) => {
+    if(!confirm("Delete this record?")) return;
+    const r = await api.post("deleteRow", {sheet, id});
+    notify(r.success, r.success?"Deleted":"Failed: "+r.error);
+  };
+  const saveSettings = async d => { setSaving(true); const r = await api.post("updateSettings", d); setSaving(false); notify(r.success, r.success?"Settings saved":"Failed: "+r.error); };
+
+  const inStock = data.inventory.filter(p=>p.Status==="in_stock");
+  const lowStock = inStock.length <= 3 ? inStock.length : 0;
+
+  return (
+    <div className="app">
+      <Sidebar page={page} setPage={setPage} open={open} setOpen={setOpen} theme={theme} toggleTheme={toggleTheme} alertCount={lowStock}/>
+      <div className="main">
+        <header className="header no-print">
+          <button className="menu-btn" onClick={()=>setOpen(true)}>☰</button>
+          <div style={{flex:1}}>
+            <h1>Mobilex Point</h1>
+            <p>☁️ Cloud sync active</p>
+          </div>
+          <button className="icon-btn" onClick={reload}>🔄</button>
+        </header>
+        <main className="content">
+          {lowStock>0 && page==="dashboard" && (
+            <div className="alert-box no-print">🔔 <b>Low Stock:</b> Only {inStock.length} phone(s) in inventory. Consider restocking.</div>
+          )}
+          {loading && <Card><div className="empty">⏳ Loading...</div></Card>}
+          {!loading && (
+            <>
+              {page==="dashboard" && <Dashboard data={data} inStock={inStock} setPage={setPage}/>}
+              {page==="buy" && <BuyPage data={data} onLocal={addPhone} onBulk={addBulkPhones}/>}
+              {page==="sell" && <SellPage data={data} inStock={inStock} onSell={addSale}/>}
+              {page==="exchange" && <ExchangePage data={data} inStock={inStock} onExchange={addExchange}/>}
+              {page==="inventory" && <InventoryPage data={data} onDelete={del}/>}
+              {page==="customers" && <CustomersPage data={data}/>}
+              {page==="expenses" && <ExpensesPage data={data} onAdd={addExpense} onDelete={del}/>}
+              {page==="reports" && <ReportsPage data={data}/>}
+              {page==="settings" && <SettingsPage data={data} onSave={saveSettings}/>}
+            </>
+          )}
+        </main>
+      </div>
+      {toast && <div className="toast">{toast}</div>}
+      {saving && <div className="loading"/>}
+    </div>
+  );
+}
+
+/* ==================== DASHBOARD ==================== */
+function Dashboard({data, inStock, setPage}) {
+  const totalSale = data.sales.reduce((a,s)=>a+Number(s.FinalPrice||0),0);
+  const totalProfit = data.sales.reduce((a,s)=>a+Number(s.Profit||0),0);
+  const totalExp = data.expenses.reduce((a,e)=>a+Number(e.Amount||0),0);
+  const net = totalProfit - totalExp;
+  const stockValue = inStock.reduce((a,p)=>a+Number(p.BuyPrice||0),0);
+
+  const today = todayISO();
+  const todaySales = data.sales.filter(s=>String(s.SellDate).slice(0,10)===today);
+  const todaySale = todaySales.reduce((a,s)=>a+Number(s.FinalPrice||0),0);
+  const todayProfit = todaySales.reduce((a,s)=>a+Number(s.Profit||0),0);
+
+  const thisMonth = today.slice(0,7);
+  const monthSales = data.sales.filter(s=>String(s.SellDate).slice(0,7)===thisMonth);
+  const monthSale = monthSales.reduce((a,s)=>a+Number(s.FinalPrice||0),0);
+  const monthProfit = monthSales.reduce((a,s)=>a+Number(s.Profit||0),0);
+
+  const chartData = [...Array(14)].map((_,i)=>{
+    const d = new Date(); d.setDate(d.getDate()-(13-i));
+    const key = d.toISOString().slice(0,10);
+    const total = data.sales.filter(s=>String(s.SellDate).slice(0,10)===key).reduce((a,s)=>a+Number(s.FinalPrice||0),0);
+    return { label: d.getDate(), total };
+  });
+  const max = Math.max(1, ...chartData.map(c=>c.total));
+
+  // Top models
+  const modelMap = {};
+  data.sales.forEach(s => {
+    const k = (s.Brand||"") + " " + (s.Model||"");
+    modelMap[k] = (modelMap[k]||0) + 1;
+  });
+  const topModels = Object.entries(modelMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  return (
+    <div>
+      <div className="grid grid-4 mb-3">
+        <Stat label="Today's Sales" value={tk(todaySale)} hint={todaySales.length+" phone(s) • Profit "+tk(todayProfit)} color="g"/>
+        <Stat label="This Month" value={tk(monthSale)} hint={monthSales.length+" phone(s) • Profit "+tk(monthProfit)} color="g"/>
+        <Stat label="Stock" value={inStock.length+" pcs"} hint={"Value "+tk(stockValue)} color="a"/>
+        <Stat label="Net Profit" value={tk(net)} hint={"Expenses "+tk(totalExp)} color={net>=0?"g":"r"}/>
+      </div>
+
+      <Card>
+        <h3>Last 14 Days Sales</h3>
+        <div className="chart">
+          {chartData.map((c,i)=>(
+            <div key={i} className="col">
+              <div className="val">{c.total>0?tk(c.total):""}</div>
+              <div className="bg"><div className="fill" style={{height:(c.total/max*100)+"%"}}/></div>
+              <div className="lbl">{c.label}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <div className="grid grid-2">
+        <Card>
+          <h3>Recent Sales</h3>
+          {!data.sales.length && <div className="empty">No sales yet</div>}
+          {data.sales.slice(0,5).map(s=>(
+            <div key={s.ID} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"1px solid var(--border)"}}>
+              <div><b>{s.Brand} {s.Model}</b><div style={{fontSize:"11px",color:"var(--muted)"}}>{s.CustomerName}</div></div>
+              <div style={{textAlign:"right"}}><b style={{color:"var(--primary)"}}>{tk(s.FinalPrice)}</b><div style={{fontSize:"11px",color:Number(s.Profit)>=0?"var(--green)":"var(--red)"}}>{tk(s.Profit)}</div></div>
+            </div>
+          ))}
+        </Card>
+        <Card>
+          <h3>Top Selling Models</h3>
+          {!topModels.length && <div className="empty">No data yet</div>}
+          {topModels.map(([name,count],i)=>(
+            <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:"1px solid var(--border)"}}>
+              <span><b>{i+1}.</b> {name}</span>
+              <span className="badge b-blue">{count}</span>
+            </div>
+          ))}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+/* ==================== BUY PAGE ==================== */
+function BuyPage({data, onLocal, onBulk}) {
+  const [tab, setTab] = useState("local");
+  return (
+    <div>
+      <div className="tabs mb-3" style={{maxWidth:"400px"}}>
+        <button className={tab==="local"?"active":""} onClick={()=>setTab("local")}>🏠 Local Customer</button>
+        <button className={tab==="wholesaler"?"active":""} onClick={()=>setTab("wholesaler")}>🏪 Wholesaler (Bulk)</button>
+      </div>
+      {tab==="local" && <LocalBuyForm data={data} onSubmit={onLocal}/>}
+      {tab==="wholesaler" && <WholesalerBuyForm data={data} onSubmit={onBulk}/>}
+    </div>
+  );
+}
+
+/* ---- LOCAL BUY FORM ---- */
+function LocalBuyForm({data, onSubmit}) {
+  const init = {
+    sellerName:"", fatherName:"", dob:"", address:"", nid:"", sellerPhone:"",
+    brand:"", model:"", ramRom:"", variant:"", color:"", imei1:"", imei2:"",
+    condition:"Good", warrantyNum:"", warrantyUnit:"Month", buyPrice:"",
+    imeiChecked:false, notes:"", buyDate: todayISO()
+  };
+  const [form, setForm] = useState(init);
+  const [busy, setBusy] = useState(false);
+  const [showPrint, setShowPrint] = useState(null);
+
+  const set = (k,v) => setForm(f=>({...f,[k]:v}));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if(!form.sellerName || !form.nid || !form.brand || !form.model || !form.imei1 || !form.buyPrice){
+      alert("Please fill: Seller Name, NID, Brand, Model, IMEI-1, Buy Price");
+      return;
+    }
+    setBusy(true);
+    const r = await onSubmit(form);
+    setBusy(false);
+    if(r && r.success){
+      setShowPrint({...form, formNo: r.formNo || r.data.FormNo});
+      setForm(init);
+    }
+  };
+
+  return (
+    <Card>
+      <h2>📥 Local Customer Purchase Form</h2>
+      <form onSubmit={submit}>
+        <div className="inv-section" style={{marginTop:0}}>SELLER INFORMATION</div>
+        <div className="form-grid">
+          <div><Label>Seller Name *</Label><input value={form.sellerName} onChange={e=>set("sellerName",e.target.value)} placeholder="আমি জনাব/জনাবা"/></div>
+          <div><Label>Date</Label><input type="date" value={form.buyDate} onChange={e=>set("buyDate",e.target.value)}/></div>
+          <div><Label>Father's Name</Label><input value={form.fatherName} onChange={e=>set("fatherName",e.target.value)}/></div>
+          <div><Label>Date of Birth</Label><input type="date" value={form.dob} onChange={e=>set("dob",e.target.value)}/></div>
+          <div className="full"><Label>Address</Label><input value={form.address} onChange={e=>set("address",e.target.value)} placeholder="গ্রাম/মহল্লা, ডাকঘর, উপজেলা, জেলা"/></div>
+          <div><Label>NID / B.C. No *</Label><input value={form.nid} onChange={e=>set("nid",e.target.value)} placeholder="জাতীয় পরিচয়পত্র নম্বর"/></div>
+          <div><Label>Mobile No</Label><input value={form.sellerPhone} onChange={e=>set("sellerPhone",e.target.value)} placeholder="01XXXXXXXXX"/></div>
+        </div>
+
+        <div className="inv-section">PRODUCT INFORMATION</div>
+        <div className="form-grid">
+          <div><Label>Brand *</Label>
+            <select value={form.brand} onChange={e=>set("brand",e.target.value)}>
+              <option value="">-- Select --</option>
+              {BRANDS.map(b=><option key={b}>{b}</option>)}
+            </select>
+          </div>
+          <div><Label>Model *</Label><input value={form.model} onChange={e=>set("model",e.target.value)} placeholder="Galaxy A12"/></div>
+          <div><Label>RAM / ROM</Label><input value={form.ramRom} onChange={e=>set("ramRom",e.target.value)} placeholder="4GB/64GB"/></div>
+          <div><Label>Variant</Label>
+            <select value={form.variant} onChange={e=>set("variant",e.target.value)}>
+              <option value="">--</option>
+              {VARIANTS.map(v=><option key={v}>{v}</option>)}
+            </select>
+          </div>
+          <div><Label>Color</Label><input value={form.color} onChange={e=>set("color",e.target.value)}/></div>
+          <div><Label>Condition</Label>
+            <select value={form.condition} onChange={e=>set("condition",e.target.value)}>
+              {CONDITIONS.map(c=><option key={c}>{c}</option>)}
+            </select>
+          </div>
+          <div><Label>IMEI-1 *</Label><input value={form.imei1} onChange={e=>set("imei1",e.target.value)} inputMode="numeric"/></div>
+          <div><Label>IMEI-2 (optional)</Label><input value={form.imei2} onChange={e=>set("imei2",e.target.value)} inputMode="numeric"/></div>
+          <div><Label>Warranty</Label>
+            <div style={{display:"flex",gap:5}}>
+              <input type="number" value={form.warrantyNum} onChange={e=>set("warrantyNum",e.target.value)} placeholder="6" style={{maxWidth:"70px"}}/>
+              <select value={form.warrantyUnit} onChange={e=>set("warrantyUnit",e.target.value)}>
+                <option>Month</option><option>Day</option>
+              </select>
+            </div>
+          </div>
+          <div><Label>Purchase Price (৳) *</Label><input type="number" value={form.buyPrice} onChange={e=>set("buyPrice",e.target.value)} style={{fontWeight:700,color:"var(--primary)"}}/></div>
+          <div className="full" style={{display:"flex",alignItems:"center",gap:8}}>
+            <input type="checkbox" id="imc" checked={form.imeiChecked} onChange={e=>set("imeiChecked",e.target.checked)} style={{width:"auto"}}/>
+            <label htmlFor="imc" style={{margin:0,cursor:"pointer"}}>I have checked IMEI with box</label>
+          </div>
+          <div className="full"><Label>Notes</Label><textarea rows="2" value={form.notes} onChange={e=>set("notes",e.target.value)}/></div>
+        </div>
+
+        <div className="form-actions">
+          <button type="button" className="btn btn-ghost" onClick={()=>setForm(init)} disabled={busy}>Clear</button>
+          <button type="submit" className="btn btn-primary" disabled={busy}>{busy?"Saving...":"💾 Save & Print"}</button>
+        </div>
+      </form>
+
+      <LocalPrintModal data={showPrint} onClose={()=>setShowPrint(null)}/>
+    </Card>
+  );
+}
+
+function LocalPrintModal({data, onClose}) {
+  if(!data) return null;
+  const policy = [
+    "১. জাতীয় পরিচয়পত্রের (NID) ফটোকপি এবং পাসপোর্ট সাইজের ছবি অবশ্যই সংযুক্ত করতে হবে।",
+    "২. Mobilex Point-এ বিক্রিত পুরোনো সেটের জন্য কোনো প্রকার আইনগত সমস্যার দায় Mobilex Point বহন করবে না।",
+    "৩. Mobilex Point কর্তৃক প্রদত্ত পরিমাণ স্বাক্ষরসহ কোনো অবস্থাতেই ফেরত দিতে বাধ্য থাকবে না।",
+    "৪. Mobilex Point থেকে বিক্রিত পণ্য পরিবর্তনের সম্পূর্ণ অধিকার Mobilex Point সংরক্ষণ করে।",
+    "৫. আমি এই মোবাইল দিয়ে রাষ্ট্রবিরোধী বা অপরাধমূলক কোনো কাজ করিনি।",
+    "৬. মোবাইলটিতে কারিগরি কোনো সমস্যা থাকলে ৭ দিনের মধ্যে Mobilex Point-কে জানাতে হবে।",
+    "৭. এই মোবাইলটির প্রকৃত মালিক আমি — এটি চুরি বা অবৈধ কোনো সেট নয়।",
+    "৮. ভবিষ্যতে মোবাইলটি ফেরত নিতে চাইলে ফোনটি থাকা সাপেক্ষে ৩০% বেশি টাকা দিয়ে ফেরত নিতে হবে।",
+    "৯. উপরোক্ত শর্তাবলী আমি সম্পূর্ণ বুঝে শুনে স্বেচ্ছায় স্বাক্ষর করলাম।"
+  ];
+  return (
+    <Modal open={!!data} onClose={onClose} title="✅ Saved — Print Receipt" wide>
+      <div className="invoice" id="localInvoice">
+        <div className="inv-head">
+          <h1>MOBILEX POINT</h1>
+          <div className="sub">BUY • SELL • EXCHANGE</div>
+          <div className="contact">📍 Teribazar, Netrakona, Bangladesh<br/>☎ 01601776617 | ☎ 01915776617</div>
+        </div>
+        <div style={{textAlign:"right",fontSize:"12px",marginBottom:"8px"}}>
+          <b>Form No:</b> {data.formNo || "MP-LC-_______"} &nbsp;|&nbsp; <b>Date:</b> {data.buyDate}
+        </div>
+        <div className="inv-section">SELLER INFORMATION</div>
+        <div className="inv-row"><span>Name:</span><b>{data.sellerName}</b></div>
+        {data.fatherName && <div className="inv-row"><span>Father's Name:</span><span>{data.fatherName}</span></div>}
+        {data.dob && <div className="inv-row"><span>Date of Birth:</span><span>{data.dob}</span></div>}
+        {data.address && <div className="inv-row"><span>Address:</span><span>{data.address}</span></div>}
+        <div className="inv-row"><span>NID / B.C. No:</span><b>{data.nid}</b></div>
+        {data.sellerPhone && <div className="inv-row"><span>Mobile No:</span><span>{data.sellerPhone}</span></div>}
+
+        <div className="inv-section">PRODUCT INFORMATION</div>
+        <div className="inv-row"><span>Brand:</span><b>{data.brand}</b></div>
+        <div className="inv-row"><span>Model:</span><b>{data.model}</b></div>
+        {data.ramRom && <div className="inv-row"><span>RAM / ROM:</span><span>{data.ramRom}</span></div>}
+        {data.variant && <div className="inv-row"><span>Variant:</span><span>{data.variant}</span></div>}
+        {data.color && <div className="inv-row"><span>Color:</span><span>{data.color}</span></div>}
+        <div className="inv-row"><span>IMEI-1:</span><b>{data.imei1}</b></div>
+        {data.imei2 && <div className="inv-row"><span>IMEI-2:</span><span>{data.imei2}</span></div>}
+        <div className="inv-row"><span>Condition:</span><span>{data.condition}</span></div>
+        {data.warrantyNum && <div className="inv-row"><span>Warranty:</span><span>{data.warrantyNum} {data.warrantyUnit}</span></div>}
+        <div className="inv-row" style={{fontSize:"15px",fontWeight:700,color:"#1e5cf5",borderTop:"2px solid #000",marginTop:"5px",paddingTop:"6px"}}>
+          <span>Purchase Price:</span><b>{tk(data.buyPrice)}</b>
+        </div>
+        {data.notes && <div style={{fontSize:"11px",marginTop:"6px"}}><b>Notes:</b> {data.notes}</div>}
+
+        <div className="inv-section">শর্তাবলী ও নিয়মাবলী / TERMS & CONDITIONS</div>
+        <div className="inv-terms">
+          <ol>{policy.map((p,i)=><li key={i}>{p}</li>)}</ol>
+        </div>
+
+        <div className="inv-sign">
+          <div className="box">
+            <div style={{minHeight:"30px",fontSize:"12px",color:"#000",marginBottom:"4px"}}>{data.sellerName}</div>
+            Seller Signature / Fingerprint
+          </div>
+          <div className="box">
+            <div style={{minHeight:"30px",fontSize:"12px",color:"#1e5cf5",fontWeight:700,marginBottom:"4px"}}>MOBILEX POINT</div>
+            Shop Authorized Signature
+          </div>
+        </div>
+        <div style={{textAlign:"center",fontSize:"10px",color:"#666",marginTop:"15px"}}>
+          এই ফর্মটি একটি অফিসিয়াল ক্রয় চুক্তি হিসেবে বিবেচিত হবে।
+        </div>
+      </div>
+      <div style={{display:"flex",gap:"8px",marginTop:"12px",justifyContent:"flex-end",flexWrap:"wrap"}} className="no-print">
+        <button className="btn btn-ghost" onClick={onClose}>Close</button>
+        <button className="btn btn-primary" onClick={()=>window.print()}>🖨️ Print</button>
+        <button className="btn btn-success" onClick={()=>{ if(confirm("Save as PDF? Click OK, then choose 'Save as PDF' in next dialog.")) window.print(); }}>📄 PDF</button>
+      </div>
+    </Modal>
+  );
+}
+
+/* ---- WHOLESALER BUY FORM ---- */
+function WholesalerBuyForm({data, onSubmit}) {
+  const initPhone = {brand:"", model:"", ramRom:"", variant:"", color:"", imei1:"", imei2:"", condition:"Good", warrantyNum:"", warrantyUnit:"Month", buyPrice:"", notes:""};
+  const [header, setHeader] = useState({sellerName:"", shopName:"", sellerPhone:"", address:"", buyDate:todayISO()});
+  const [phones, setPhones] = useState([{...initPhone}]);
+  const [busy, setBusy] = useState(false);
+
+  const setH = (k,v) => setHeader(h=>({...h,[k]:v}));
+  const setP = (i,k,v) => setPhones(ps => ps.map((p,idx) => idx===i ? {...p,[k]:v} : p));
+  const addPhone = () => setPhones(ps => [...ps, {...initPhone}]);
+  const removePhone = (i) => { if(phones.length>1 && confirm("Remove this phone?")) setPhones(ps => ps.filter((_,idx)=>idx!==i)); };
+
+  const total = phones.reduce((a,p)=>a+Number(p.buyPrice||0),0);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if(!header.sellerName){ alert("Enter seller name"); return; }
+    const valid = phones.every(p => p.brand && p.model && p.imei1 && p.buyPrice);
+    if(!valid){ alert("Every phone needs Brand, Model, IMEI-1, and Buy Price"); return; }
+    setBusy(true);
+    const r = await onSubmit({...header, phones});
+    setBusy(false);
+    if(r && r.success){
+      setHeader({sellerName:"", shopName:"", sellerPhone:"", address:"", buyDate:todayISO()});
+      setPhones([{...initPhone}]);
+    }
+  };
+
+  return (
+    <Card>
+      <h2>🏪 Wholesaler Bulk Purchase</h2>
+      <form onSubmit={submit}>
+        <div className="inv-section" style={{marginTop:0}}>SELLER / SHOP INFO</div>
+        <div className="form-grid">
+          <div><Label>Seller Name *</Label><input value={header.sellerName} onChange={e=>setH("sellerName",e.target.value)}/></div>
+          <div><Label>Shop Name</Label><input value={header.shopName} onChange={e=>setH("shopName",e.target.value)}/></div>
+          <div><Label>Mobile</Label><input value={header.sellerPhone} onChange={e=>setH("sellerPhone",e.target.value)}/></div>
+          <div><Label>Purchase Date</Label><input type="date" value={header.buyDate} onChange={e=>setH("buyDate",e.target.value)}/></div>
+          <div className="full"><Label>Address</Label><input value={header.address} onChange={e=>setH("address",e.target.value)}/></div>
+        </div>
+
+        <div className="inv-section">PHONES ({phones.length})</div>
+        {phones.map((p,i)=>(
+          <div key={i} className="bulk-item">
+            <div className="bulk-head">
+              <b>📱 Phone #{i+1}</b>
+              {phones.length>1 && <button type="button" className="btn btn-danger btn-sm" onClick={()=>removePhone(i)}>Remove</button>}
+            </div>
+            <div className="form-grid">
+              <div><Label>Brand *</Label>
+                <select value={p.brand} onChange={e=>setP(i,"brand",e.target.value)}>
+                  <option value="">--</option>
+                  {BRANDS.map(b=><option key={b}>{b}</option>)}
+                </select>
+              </div>
+              <div><Label>Model *</Label><input value={p.model} onChange={e=>setP(i,"model",e.target.value)}/></div>
+              <div><Label>IMEI-1 *</Label><input value={p.imei1} onChange={e=>setP(i,"imei1",e.target.value)}/></div>
+              <div><Label>IMEI-2</Label><input value={p.imei2} onChange={e=>setP(i,"imei2",e.target.value)}/></div>
+              <div><Label>RAM / ROM</Label><input value={p.ramRom} onChange={e=>setP(i,"ramRom",e.target.value)}/></div>
+              <div><Label>Variant</Label>
+                <select value={p.variant} onChange={e=>setP(i,"variant",e.target.value)}>
+                  <option value="">--</option>
+                  {VARIANTS.map(v=><option key={v}>{v}</option>)}
+                </select>
+              </div>
+              <div><Label>Color</Label><input value={p.color} onChange={e=>setP(i,"color",e.target.value)}/></div>
+              <div><Label>Condition</Label>
+                <select value={p.condition} onChange={e=>setP(i,"condition",e.target.value)}>
+                  {CONDITIONS.map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div><Label>Warranty</Label>
+                <div style={{display:"flex",gap:5}}>
+                  <input type="number" value={p.warrantyNum} onChange={e=>setP(i,"warrantyNum",e.target.value)} style={{maxWidth:"70px"}}/>
+                  <select value={p.warrantyUnit} onChange={e=>setP(i,"warrantyUnit",e.target.value)}>
+                    <option>Month</option><option>Day</option>
+                  </select>
+                </div>
+              </div>
+              <div><Label>Buy Price (৳) *</Label><input type="number" value={p.buyPrice} onChange={e=>setP(i,"buyPrice",e.target.value)} style={{fontWeight:700,color:"var(--primary)"}}/></div>
+            </div>
+          </div>
+        ))}
+
+        <div style={{display:"flex",gap:"8px",alignItems:"center",marginTop:"10px",flexWrap:"wrap"}}>
+          <button type="button" className="btn btn-ghost" onClick={addPhone}>➕ Add Another Phone</button>
+          <span style={{marginLeft:"auto",fontWeight:700,fontSize:"15px"}}>Total: <span style={{color:"var(--primary)"}}>{tk(total)}</span></span>
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" className="btn btn-primary" disabled={busy}>{busy?"Saving...":("💾 Save All ("+phones.length+" phones)")}</button>
+        </div>
+      </form>
+    </Card>
+  );
+}
+
+/* ==================== SELL PAGE ==================== */
+function SellPage({data, inStock, onSell}) {
+  const [selectedId, setSelectedId] = useState("");
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [receipt, setReceipt] = useState(null);
+  const [q, setQ] = useState("");
+  const init = {
+    sellingPrice:"", discount:0,
+    cashAmount:"", mfsMethod:"", mfsAmount:"", mfsTrxId:"",
+    dueAmount:0, dueDate:"",
+    warrantyType:"Official", warrantyNum:"6", warrantyUnit:"Month",
+    customerName:"", customerPhone:"", customerAddress:"",
+    sellDate: todayISO(), notes:""
+  };
+  const [form, setForm] = useState(init);
+
+  const selected = inStock.find(p => p.ID === selectedId);
+  const list = inStock.filter(p => !q || ((p.Brand||"")+(p.Model||"")+(p.IMEI1||"")).toLowerCase().includes(q.toLowerCase()));
+
+  const set = (k,v) => setForm(f=>({...f,[k]:v}));
+
+  const sellingPrice = Number(form.sellingPrice||0);
+  const discount = Number(form.discount||0);
+  const finalPrice = sellingPrice - discount;
+  const profit = selected ? finalPrice - Number(selected.BuyPrice||0) : 0;
+
+  const openSell = (p) => {
+    setSelectedId(p.ID);
+    setForm(init);
+    setOpen(true);
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if(!form.sellingPrice){ alert("Enter selling price"); return; }
+    const cash = Number(form.cashAmount||0);
+    const mfs = Number(form.mfsAmount||0);
+    const due = Number(form.dueAmount||0);
+    if(cash + mfs + due !== finalPrice){
+      if(!confirm("Cash + MFS + Due ("+(cash+mfs+due)+") doesn't match Total ("+finalPrice+"). Continue anyway?")) return;
+    }
+    setBusy(true);
+    const r = await onSell({...form, phoneId: selectedId});
+    setBusy(false);
+    if(r && r.success){
+      setReceipt({...r.data, phone: selected, form});
+      setOpen(false); setSelectedId(""); setForm(init);
+    }
+  };
+
+  const totalPaid = Number(form.cashAmount||0) + Number(form.mfsAmount||0) + Number(form.dueAmount||0);
+
+  return (
+    <div>
+      <Card>
+        <div className="flex-b mb-3">
+          <div className="search" style={{flex:1}}>
+            <input placeholder="Search by Brand / Model / IMEI" value={q} onChange={e=>setQ(e.target.value)}/>
+          </div>
+          <span className="badge b-blue">{list.length} in stock</span>
+        </div>
+        {!list.length && <div className="empty">No phones in stock</div>}
+        <div className="grid grid-2">
+          {list.map(p=>(
+            <div key={p.ID} style={{border:"1px solid var(--border)",borderRadius:"11px",padding:"11px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:"6px"}}>
+                <div>
+                  <b>{p.Brand} {p.Model}</b>
+                  <div style={{fontSize:"11px",color:"var(--muted)"}}>{p.RAMROM} • {p.Color} • {p.Condition}</div>
+                  {p.IMEI1 && <div style={{fontSize:"10px",color:"var(--muted)"}}>IMEI: {p.IMEI1}</div>}
+                </div>
+                <span className="badge b-green">In Stock</span>
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
+                <div><div style={{fontSize:"11px",color:"var(--muted)"}}>Buy: {tk(p.BuyPrice)}</div></div>
+                <button className="btn btn-primary btn-sm" onClick={()=>openSell(p)}>Sell</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
+        <h3>Recent Sales ({data.sales.length})</h3>
+        <div style={{overflowX:"auto"}}>
+          <table>
+            <thead><tr><th>Date</th><th>Invoice</th><th>Phone</th><th>Customer</th><th>Total</th><th>Profit</th></tr></thead>
+            <tbody>
+              {data.sales.slice(0,20).map(s=>(
+                <tr key={s.ID}>
+                  <td style={{color:"var(--muted)"}}>{s.SellDate}</td>
+                  <td style={{fontSize:"11px",fontFamily:"monospace"}}>{s.InvoiceNo||"—"}</td>
+                  <td><b>{s.Brand} {s.Model}</b></td>
+                  <td>{s.CustomerName}</td>
+                  <td><b>{tk(s.FinalPrice)}</b></td>
+                  <td style={{color:Number(s.Profit)>=0?"var(--green)":"var(--red)",fontWeight:600}}>{tk(s.Profit)}</td>
+                </tr>
+              ))}
+              {!data.sales.length && <tr><td colSpan="6" className="empty">No sales yet</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* SELL MODAL */}
+      <Modal open={open} onClose={()=>setOpen(false)} title={"Sell — "+(selected?.Brand||"")+" "+(selected?.Model||"")} wide>
+        <form onSubmit={submit}>
+          <div className="info-box">
+            <div className="row"><span>Buy Price</span><b>{tk(selected?.BuyPrice)}</b></div>
+            <div className="row"><span>IMEI</span><b>{selected?.IMEI1||"—"}</b></div>
+            <div className="row"><span>RAM/ROM / Variant</span><b>{selected?.RAMROM} / {selected?.Variant}</b></div>
+          </div>
+
+          <div className="inv-section">PRICING</div>
+          <div className="form-grid">
+            <div><Label>Selling Price * (৳)</Label><input type="number" value={form.sellingPrice} onChange={e=>set("sellingPrice",e.target.value)}/></div>
+            <div><Label>Discount (৳)</Label><input type="number" value={form.discount} onChange={e=>set("discount",e.target.value)}/></div>
+          </div>
+          <div className="info-box" style={{display:"flex",justifyContent:"space-between",fontWeight:700,fontSize:"15px"}}>
+            <span>Total Payable</span><b style={{color:"var(--primary)"}}>{tk(finalPrice)}</b>
+          </div>
+          <div className="info-box" style={{display:"flex",justifyContent:"space-between",background:profit>=0?"rgba(5,150,105,.12)":"rgba(220,38,38,.12)",color:profit>=0?"var(--green)":"var(--red)"}}>
+            <span>Profit</span><b>{tk(profit)}</b>
+          </div>
+
+          <div className="inv-section">PAYMENT BREAKDOWN</div>
+          <div className="form-grid">
+            <div><Label>💵 Cash (৳)</Label><input type="number" value={form.cashAmount} onChange={e=>set("cashAmount",e.target.value)}/></div>
+            <div><Label>📱 MFS Amount (৳)</Label><input type="number" value={form.mfsAmount} onChange={e=>set("mfsAmount",e.target.value)}/></div>
+            <div><Label>MFS Method</Label>
+              <select value={form.mfsMethod} onChange={e=>set("mfsMethod",e.target.value)}>
+                <option value="">-- Select --</option>
+                {PAY_METHODS.map(m=><option key={m}>{m}</option>)}
+              </select>
+            </div>
+            <div><Label>MFS TrxID (optional)</Label><input value={form.mfsTrxId} onChange={e=>set("mfsTrxId",e.target.value)}/></div>
+            <div><Label>⏳ Due Amount (৳)</Label><input type="number" value={form.dueAmount} onChange={e=>set("dueAmount",e.target.value)}/></div>
+            <div><Label>Due Date</Label><input type="date" value={form.dueDate} onChange={e=>set("dueDate",e.target.value)}/></div>
+          </div>
+          {totalPaid !== finalPrice && form.sellingPrice && (
+            <div className="warn-box">⚠️ Entered total ({tk(totalPaid)}) doesn't match Total Payable ({tk(finalPrice)})</div>
+          )}
+
+          <div className="inv-section">WARRANTY</div>
+          <div className="form-grid">
+            <div><Label>Warranty Type</Label>
+              <select value={form.warrantyType} onChange={e=>set("warrantyType",e.target.value)}>
+                <option>Official</option><option>Unofficial</option>
+              </select>
+            </div>
+            <div><Label>Duration</Label>
+              <div style={{display:"flex",gap:5}}>
+                <input type="number" value={form.warrantyNum} onChange={e=>set("warrantyNum",e.target.value)} style={{maxWidth:"80px"}}/>
+                <select value={form.warrantyUnit} onChange={e=>set("warrantyUnit",e.target.value)}>
+                  <option>Month</option><option>Day</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="inv-section">CUSTOMER</div>
+          <div className="form-grid">
+            <div><Label>Customer Name</Label><input value={form.customerName} onChange={e=>set("customerName",e.target.value)}/></div>
+            <div><Label>Customer Phone</Label><input value={form.customerPhone} onChange={e=>set("customerPhone",e.target.value)}/></div>
+            <div className="full"><Label>Customer Address</Label><input value={form.customerAddress} onChange={e=>set("customerAddress",e.target.value)}/></div>
+            <div><Label>Sell Date</Label><input type="date" value={form.sellDate} onChange={e=>set("sellDate",e.target.value)}/></div>
+            <div><Label>Notes</Label><input value={form.notes} onChange={e=>set("notes",e.target.value)}/></div>
+          </div>
+
+          <div className="form-actions">
+            <button type="button" className="btn btn-ghost" onClick={()=>setOpen(false)} disabled={busy}>Cancel</button>
+            <button type="submit" className="btn btn-success" disabled={busy}>{busy?"Saving...":"💾 Complete Sale"}</button>
+          </div>
+        </form>
+      </Modal>
+
+      <SellInvoiceModal data={receipt} onClose={()=>setReceipt(null)}/>
+    </div>
+  );
+}
+
+function SellInvoiceModal({data, onClose}) {
+  if(!data) return null;
+  const s = data;
+  const policy = [
+    "১. ফোন ক্রয়ের সময় সকল ফিচার, ডিসপ্লে ও বডি ভালোভাবে পরীক্ষা করে বুঝে নেওয়ার জন্য অনুরোধ করা হচ্ছে।",
+    "২. ক্রয়ের ১০ দিনের মধ্যে কেবল ম্যানুফ্যাকচারিং টেকনিক্যাল সমস্যায় রিপ্লেসমেন্ট প্রযোজ্য (স্টক সাপেক্ষে)।",
+    "৩. ক্রয়ের পর নির্দিষ্ট সময় পর্যন্ত বিনামূল্যে সার্ভিসিং সুবিধা মিলবে (পার্টসের মূল্য ব্যতীত)।",
+    "৪. ডিসপ্লে, টাচ, ক্যামেরা, ব্যাটারি, মাদারবোর্ড ও যেকোনো সফটওয়্যারজনিত সমস্যার ওপর কোনো রিপ্লেসমেন্ট ওয়ারেন্টি নেই।",
+    "৫. পানিতে ভেজা, ওপর থেকে পড়ে ভাঙা বা শারীরিক ক্ষতির ক্ষেত্রে ওয়ারেন্টি বাতিল হবে।",
+    "৬. রুট করা, আন-অফিসিয়াল সফটওয়্যার ব্যবহার কিংবা পাসওয়ার্ড ভুলে ফোন লক হলে শপ দায়ী নয়।",
+    "৭. ওয়ারেন্টি সেবা পেতে মূল ক্যাশ মেমোসহ ফোনটি সরাসরি আমাদের শপে নিয়ে আসতে হবে।",
+    "৮. বিক্রিত পণ্য ক্রয়কৃত মূল্যে ফেরত, পরিবর্তন বা ক্যাশ রিফান্ড করা হয় না।"
+  ];
+  return (
+    <Modal open={!!data} onClose={onClose} title="✅ Sale Completed — Print Invoice" wide>
+      <div className="invoice" id="sellInvoice">
+        <div className="inv-head">
+          <h1>MOBILEX POINT</h1>
+          <div className="sub">BUY • SELL • EXCHANGE</div>
+          <div className="contact">📍 Teribazar, Netrakona, Bangladesh<br/>☎ 01601776617 | ☎ 01915776617</div>
+        </div>
+
+        <div style={{display:"flex",justifyContent:"space-between",fontSize:"12px",marginBottom:"8px"}}>
+          <div><b>Invoice #:</b> {s.InvoiceNo}</div>
+          <div><b>Date:</b> {s.SellDate}</div>
+        </div>
+
+        <div className="inv-section">CUSTOMER INFORMATION</div>
+        <div className="inv-row"><span>Name:</span><b>{s.CustomerName || "Walk-in"}</b></div>
+        {s.CustomerPhone && <div className="inv-row"><span>Phone:</span><span>{s.CustomerPhone}</span></div>}
+        {s.CustomerAddress && <div className="inv-row"><span>Address:</span><span>{s.CustomerAddress}</span></div>}
+
+        <div className="inv-section">PRODUCT DETAILS</div>
+        <div className="inv-row"><span>Brand:</span><b>{s.Brand}</b></div>
+        <div className="inv-row"><span>Model:</span><b>{s.Model}</b></div>
+        {s.RAMROM && <div className="inv-row"><span>RAM / ROM:</span><span>{s.RAMROM}</span></div>}
+        {s.Variant && <div className="inv-row"><span>Variant:</span><span>{s.Variant}</span></div>}
+        {s.Color && <div className="inv-row"><span>Color:</span><span>{s.Color}</span></div>}
+        {s.IMEI && <div className="inv-row"><span>IMEI:</span><span>{s.IMEI}</span></div>}
+        {s.Condition && <div className="inv-row"><span>Condition:</span><span>{s.Condition}</span></div>}
+
+        {(s.WarrantyType || s.WarrantyNum) && (
+          <>
+            <div className="inv-section">WARRANTY</div>
+            <div className="inv-row"><span>Type:</span><span>{s.WarrantyType}</span></div>
+            {s.WarrantyNum && <div className="inv-row"><span>Duration:</span><span>{s.WarrantyNum} {s.WarrantyUnit}</span></div>}
+            {s.WarrantyStart && <div className="inv-row"><span>Valid From:</span><span>{s.WarrantyStart}</span></div>}
+            {s.WarrantyEnd && <div className="inv-row"><span>Valid Until:</span><b>{s.WarrantyEnd}</b></div>}
+          </>
+        )}
+
+        <div className="inv-section">PAYMENT DETAILS</div>
+        <div className="inv-row"><span>Selling Price:</span><span>{tk(s.SellingPrice)}</span></div>
+        {Number(s.Discount)>0 && <div className="inv-row"><span>Discount:</span><span>-{tk(s.Discount)}</span></div>}
+        <div className="inv-row" style={{borderTop:"2px solid #000",fontWeight:700,fontSize:"14px",paddingTop:"6px",marginTop:"3px"}}>
+          <span>Total Payable:</span><b>{tk(s.FinalPrice)}</b>
+        </div>
+        {Number(s.CashAmount)>0 && <div className="inv-row"><span>Cash Paid:</span><span>{tk(s.CashAmount)}</span></div>}
+        {Number(s.MFSAmount)>0 && (
+          <div className="inv-row">
+            <span>{s.MFSMethod || "MFS"}{s.MFS_TrxID?" (TrxID: "+s.MFS_TrxID+")":""}:</span>
+            <span>{tk(s.MFSAmount)}</span>
+          </div>
+        )}
+        {Number(s.DueAmount)>0 && <div className="inv-row" style={{color:"#dc2626",fontWeight:600}}><span>Due Amount:</span><span>{tk(s.DueAmount)}{s.DueDate?" (by "+s.DueDate+")":""}</span></div>}
+        <div className="inv-row" style={{fontWeight:700}}><span>Total Received:</span><b>{tk(Number(s.CashAmount||0)+Number(s.MFSAmount||0))}</b></div>
+
+        <div className="inv-section">শর্তাবলী ও নিয়মাবলী / WARRANTY POLICY</div>
+        <div className="inv-terms">
+          <ol>{policy.map((p,i)=><li key={i}>{p}</li>)}</ol>
+        </div>
+
+        <div className="inv-sign">
+          <div className="box">
+            <div style={{minHeight:"30px",fontSize:"12px",marginBottom:"4px"}}>{s.CustomerName || "Customer"}</div>
+            Buyer Signature
+          </div>
+          <div className="box">
+            <div style={{minHeight:"30px",fontSize:"12px",color:"#1e5cf5",fontWeight:700,marginBottom:"4px"}}>MOBILEX POINT</div>
+            Seller Signature
+          </div>
+        </div>
+        <div style={{textAlign:"center",fontSize:"11px",color:"#666",marginTop:"15px",lineHeight:"1.7"}}>
+          <b>ধন্যবাদ! আবার আসবেন। 🙏</b><br/>
+          For support: 01601776617 | 01915776617
+        </div>
+      </div>
+      <div style={{display:"flex",gap:"8px",marginTop:"12px",justifyContent:"flex-end",flexWrap:"wrap"}} className="no-print">
+        <button className="btn btn-ghost" onClick={onClose}>Close</button>
+        <button className="btn btn-primary" onClick={()=>window.print()}>🖨️ Print</button>
+        <button className="btn btn-success" onClick={()=>window.print()}>📄 PDF</button>
+      </div>
+    </Modal>
+  );
+}
+
+/* ==================== EXCHANGE PAGE ==================== */
+function ExchangePage({data, inStock, onExchange}) {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [outId, setOutId] = useState("");
+  const init = {
+    customerName:"", customerPhone:"", customerAddress:"", customerNID:"",
+    inPhoneBrand:"", inPhoneModel:"", inPhoneRAMROM:"", inPhoneVariant:"", inPhoneColor:"",
+    inPhoneIMEI1:"", inPhoneIMEI2:"", inPhoneCondition:"Good",
+    inPhoneWarrantyNum:"", inPhoneWarrantyUnit:"Month", inPhoneBuyPrice:"",
+    outPhoneSellingPrice:"", cashFromCustomer:"", cashToCustomer:"",
+    date: todayISO(), notes:""
+  };
+  const [form, setForm] = useState(init);
+  const set = (k,v) => setForm(f=>({...f,[k]:v}));
+
+  const outPhone = inStock.find(p => p.ID === outId);
+  const inPrice = Number(form.inPhoneBuyPrice||0);
+  const outPrice = Number(outPhone?.BuyPrice||0);
+  const balance = outPrice - inPrice; // positive = customer pays us
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if(!outId){ alert("Select our phone (out)"); return; }
+    if(!form.customerName || !form.inPhoneBrand || !form.inPhoneModel || !form.inPhoneIMEI1){ alert("Fill customer + incoming phone info"); return; }
+    setBusy(true);
+    const r = await onExchange({...form, outPhoneId: outId});
+    setBusy(false);
+    if(r && r.success){
+      setOpen(false); setOutId(""); setForm(init);
+    }
+  };
+
+  return (
+    <div>
+      <Card>
+        <div className="flex-b">
+          <div>
+            <h3>🔄 Exchange</h3>
+            <p style={{fontSize:"12px",color:"var(--muted)"}}>Customer's old phone + cash → our stock phone</p>
+          </div>
+          <button className="btn btn-primary" onClick={()=>setOpen(true)} disabled={!inStock.length}>+ New Exchange</button>
+        </div>
+      </Card>
+
+      <Card>
+        <h3>History ({data.exchanges.length})</h3>
+        <div style={{overflowX:"auto"}}>
+          <table>
+            <thead><tr><th>Date</th><th>Customer</th><th>In Phone</th><th>Out Phone</th><th>Balance</th></tr></thead>
+            <tbody>
+              {data.exchanges.map(x=>(
+                <tr key={x.ID}>
+                  <td style={{color:"var(--muted)"}}>{x.Date}</td>
+                  <td>{x.CustomerName}</td>
+                  <td>{x.InPhoneBrand} {x.InPhoneModel} <span style={{color:"var(--muted)"}}>({tk(x.InPhoneBuyPrice)})</span></td>
+                  <td>{x.OutPhoneBrand} {x.OutPhoneModel} <span style={{color:"var(--muted)"}}>({tk(x.OutPhoneSellingPrice)})</span></td>
+                  <td style={{color:Number(x.Balance)>=0?"var(--green)":"var(--red)",fontWeight:600}}>{tk(Math.abs(x.Balance))}</td>
+                </tr>
+              ))}
+              {!data.exchanges.length && <tr><td colSpan="5" className="empty">No exchanges yet</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      <Modal open={open} onClose={()=>setOpen(false)} title="New Exchange" wide>
+        <form onSubmit={submit}>
+          <div className="inv-section">CUSTOMER INFO</div>
+          <div className="form-grid">
+            <div><Label>Customer Name *</Label><input value={form.customerName} onChange={e=>set("customerName",e.target.value)}/></div>
+            <div><Label>Phone</Label><input value={form.customerPhone} onChange={e=>set("customerPhone",e.target.value)}/></div>
+            <div><Label>Address</Label><input value={form.customerAddress} onChange={e=>set("customerAddress",e.target.value)}/></div>
+            <div><Label>NID (optional)</Label><input value={form.customerNID} onChange={e=>set("customerNID",e.target.value)}/></div>
+          </div>
+
+          <div className="inv-section">INCOMING PHONE (Customer gives us)</div>
+          <div className="form-grid">
+            <div><Label>Brand *</Label>
+              <select value={form.inPhoneBrand} onChange={e=>set("inPhoneBrand",e.target.value)}>
+                <option value="">--</option>
+                {BRANDS.map(b=><option key={b}>{b}</option>)}
+              </select>
+            </div>
+            <div><Label>Model *</Label><input value={form.inPhoneModel} onChange={e=>set("inPhoneModel",e.target.value)}/></div>
+            <div><Label>IMEI-1 *</Label><input value={form.inPhoneIMEI1} onChange={e=>set("inPhoneIMEI1",e.target.value)}/></div>
+            <div><Label>IMEI-2</Label><input value={form.inPhoneIMEI2} onChange={e=>set("inPhoneIMEI2",e.target.value)}/></div>
+            <div><Label>RAM/ROM</Label><input value={form.inPhoneRAMROM} onChange={e=>set("inPhoneRAMROM",e.target.value)}/></div>
+            <div><Label>Variant</Label>
+              <select value={form.inPhoneVariant} onChange={e=>set("inPhoneVariant",e.target.value)}>
+                <option value="">--</option>
+                {VARIANTS.map(v=><option key={v}>{v}</option>)}
+              </select>
+            </div>
+            <div><Label>Color</Label><input value={form.inPhoneColor} onChange={e=>set("inPhoneColor",e.target.value)}/></div>
+            <div><Label>Condition</Label>
+              <select value={form.inPhoneCondition} onChange={e=>set("inPhoneCondition",e.target.value)}>
+                {CONDITIONS.map(c=><option key={c}>{c}</option>)}
+              </select>
+            </div>
+            <div><Label>Warranty</Label>
+              <div style={{display:"flex",gap:5}}>
+                <input type="number" value={form.inPhoneWarrantyNum} onChange={e=>set("inPhoneWarrantyNum",e.target.value)} style={{maxWidth:"70px"}}/>
+                <select value={form.inPhoneWarrantyUnit} onChange={e=>set("inPhoneWarrantyUnit",e.target.value)}>
+                  <option>Month</option><option>Day</option>
+                </select>
+              </div>
+            </div>
+            <div><Label>We Buy At (৳)</Label><input type="number" value={form.inPhoneBuyPrice} onChange={e=>set("inPhoneBuyPrice",e.target.value)}/></div>
+          </div>
+
+          <div className="inv-section">OUTGOING PHONE (Customer takes from us)</div>
+          <div className="form-grid">
+            <div className="full"><Label>Select from our stock *</Label>
+              <select value={outId} onChange={e=>setOutId(e.target.value)}>
+                <option value="">-- Select --</option>
+                {inStock.map(p=><option key={p.ID} value={p.ID}>{p.Brand} {p.Model} ({p.RAMROM}) — Buy {tk(p.BuyPrice)} — IMEI {p.IMEI1}</option>)}
+              </select>
+            </div>
+            {outPhone && (
+              <>
+                <div className="full info-box">
+                  <div className="row"><span>Brand / Model</span><b>{outPhone.Brand} {outPhone.Model}</b></div>
+                  <div className="row"><span>IMEI</span><span>{outPhone.IMEI1}</span></div>
+                  <div className="row"><span>Buy Price</span><b>{tk(outPhone.BuyPrice)}</b></div>
+                </div>
+                <div><Label>Selling Price to Customer (৳)</Label><input type="number" value={form.outPhoneSellingPrice} onChange={e=>set("outPhoneSellingPrice",e.target.value)} placeholder={String(outPhone.BuyPrice)}/></div>
+              </>
+            )}
+          </div>
+
+          {outPhone && (
+            <>
+              <div className="inv-section">BALANCE</div>
+              <div className="info-box" style={{display:"flex",justifyContent:"space-between",fontWeight:700,fontSize:"15px",background:balance>0?"rgba(5,150,105,.12)":balance<0?"rgba(220,38,38,.12)":"rgba(30,92,245,.1)",color:balance>0?"var(--green)":balance<0?"var(--red)":"var(--primary)"}}>
+                <span>{balance>0?"Customer pays us":balance<0?"We pay customer":"Balanced"}</span>
+                <b>{tk(Math.abs(balance))}</b>
+              </div>
+              <div className="form-grid">
+                <div><Label>Cash From Customer (৳)</Label><input type="number" value={form.cashFromCustomer} onChange={e=>set("cashFromCustomer",e.target.value)} placeholder={balance>0?String(balance):"0"}/></div>
+                <div><Label>Cash To Customer (৳)</Label><input type="number" value={form.cashToCustomer} onChange={e=>set("cashToCustomer",e.target.value)} placeholder={balance<0?String(-balance):"0"}/></div>
+              </div>
+            </>
+          )}
+
+          <div className="form-grid">
+            <div><Label>Date</Label><input type="date" value={form.date} onChange={e=>set("date",e.target.value)}/></div>
+            <div><Label>Notes</Label><input value={form.notes} onChange={e=>set("notes",e.target.value)}/></div>
+          </div>
+
+          <div className="form-actions">
+            <button type="button" className="btn btn-ghost" onClick={()=>setOpen(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary" disabled={busy}>{busy?"Saving...":"💾 Save Exchange"}</button>
+          </div>
+        </form>
+      </Modal>
+    </div>
+  );
+}
+
+/* ==================== INVENTORY PAGE ==================== */
+function InventoryPage({data, onDelete}) {
+  const [tab, setTab] = useState("in_stock");
+  const [q, setQ] = useState("");
+  const [brand, setBrand] = useState("");
+  const [source, setSource] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+
+  const filtered = data.inventory.filter(p=>{
+    if(tab && p.Status !== tab) return false;
+    if(q && !((p.Brand||"")+(p.Model||"")+(p.IMEI1||"")+(p.SellerName||"")).toLowerCase().includes(q.toLowerCase())) return false;
+    if(brand && p.Brand !== brand) return false;
+    if(source && p.Source !== source) return false;
+    if(from && String(p.BuyDate) < from) return false;
+    if(to && String(p.BuyDate) > to) return false;
+    return true;
+  });
+
+  const exportCSV = () => {
+    if(!filtered.length){ alert("Nothing to export"); return; }
+    const headers = ["ID","Source","SellerName","SellerPhone","Brand","Model","RAMROM","Variant","Color","IMEI1","IMEI2","Condition","WarrantyNum","WarrantyUnit","BuyPrice","BuyDate","Status"];
+    const rows = filtered.map(p => headers.map(h => '"'+String(p[h]??'').replace(/"/g,'""')+'"').join(","));
+    const csv = [headers.join(",")].concat(rows).join("\n");
+    const blob = new Blob(["\ufeff"+csv], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "mobilex-inventory-"+Date.now()+".csv";
+    a.click();
+  };
+
+  const tabs = [
+    {k:"in_stock",l:"In Stock"},
+    {k:"sold",l:"Sold"},
+    {k:"exchanged",l:"Exchanged"}
+  ];
+
+  return (
+    <div>
+      <Card>
+        <div className="flex-b mb-3" style={{gap:"8px"}}>
+          <div className="tabs">
+            {tabs.map(t=><button key={t.k} className={tab===t.k?"active":""} onClick={()=>setTab(t.k)}>{t.l}</button>)}
+          </div>
+          <button className="btn btn-ghost btn-sm" onClick={exportCSV}>📥 Export CSV</button>
+        </div>
+
+        <div className="grid grid-3" style={{marginBottom:"10px"}}>
+          <div className="search"><input placeholder="Search..." value={q} onChange={e=>setQ(e.target.value)}/></div>
+          <select value={brand} onChange={e=>setBrand(e.target.value)}>
+            <option value="">All Brands</option>
+            {BRANDS.map(b=><option key={b}>{b}</option>)}
+          </select>
+          <select value={source} onChange={e=>setSource(e.target.value)}>
+            <option value="">All Sources</option>
+            <option>Local Customer</option>
+            <option>Wholesaler</option>
+            <option>Exchange - Local</option>
+          </select>
+          <div><input type="date" value={from} onChange={e=>setFrom(e.target.value)} placeholder="From"/></div>
+          <div><input type="date" value={to} onChange={e=>setTo(e.target.value)} placeholder="To"/></div>
+          <button className="btn btn-ghost" onClick={()=>{setQ("");setBrand("");setSource("");setFrom("");setTo("");}}>Reset</button>
+        </div>
+
+        <div style={{overflowX:"auto"}}>
+          <table>
+            <thead>
+              <tr><th>Source</th><th>Phone</th><th>IMEI-1</th><th>Variant</th><th>Condition</th><th>Buy</th><th>Seller</th><th>Date</th><th></th></tr>
+            </thead>
+            <tbody>
+              {filtered.map(p=>(
+                <tr key={p.ID}>
+                  <td><span className="badge b-gray" style={{fontSize:"9px"}}>{(p.Source||"").split(" ")[0]}</span></td>
+                  <td><b>{p.Brand} {p.Model}</b><div style={{fontSize:"10px",color:"var(--muted)"}}>{p.RAMROM} {p.Color}</div></td>
+                  <td style={{fontSize:"11px",fontFamily:"monospace"}}>{p.IMEI1}</td>
+                  <td>{p.Variant}</td>
+                  <td>{p.Condition}</td>
+                  <td><b>{tk(p.BuyPrice)}</b></td>
+                  <td>{p.SellerName||"—"}<div style={{fontSize:"10px",color:"var(--muted)"}}>{p.SellerPhone}</div></td>
+                  <td style={{color:"var(--muted)"}}>{p.BuyDate}</td>
+                  <td><button className="icon-btn" onClick={()=>onDelete("Inventory", p.ID)}>🗑️</button></td>
+                </tr>
+              ))}
+              {!filtered.length && <tr><td colSpan="9" className="empty">No phones found</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ==================== CUSTOMERS PAGE ==================== */
+function CustomersPage({data}) {
+  const [q, setQ] = useState("");
+  const [selected, setSelected] = useState(null);
+
+  const filtered = data.customers.filter(c => !q || ((c.Name||"")+(c.Phone||"")).toLowerCase().includes(q.toLowerCase()));
+
+  const customerSales = selected ? data.sales.filter(s => s.CustomerName === selected.Name) : [];
+  const customerBuys = selected ? data.inventory.filter(p => p.SellerName === selected.Name) : [];
+
+  return (
+    <div>
+      <Card>
+        <div className="flex-b mb-3">
+          <h2>👥 Customers ({data.customers.length})</h2>
+          <div className="search" style={{maxWidth:"280px"}}>
+            <input placeholder="Search name / phone" value={q} onChange={e=>setQ(e.target.value)}/>
+          </div>
+        </div>
+        {!filtered.length && <div className="empty">No customers yet. They'll be added automatically when you Buy/Sell.</div>}
+        <div className="grid grid-2">
+          {filtered.map(c=>(
+            <div key={c.ID} onClick={()=>setSelected(c)} style={{border:"1px solid var(--border)",borderRadius:"11px",padding:"11px",cursor:"pointer"}}>
+              <div className="flex-b">
+                <div>
+                  <b>{c.Name}</b>
+                  {c.Phone && <div style={{fontSize:"11px",color:"var(--primary)"}}>📞 {c.Phone}</div>}
+                </div>
+                <span className="badge b-blue">{c.TotalTransactions || 0} deals</span>
+              </div>
+              <div style={{fontSize:"11px",color:"var(--muted)",marginTop:"6px",lineHeight:"1.7"}}>
+                <div>Type: {c.Types || "—"}</div>
+                <div>Total Spent: <b>{tk(c.TotalSpent)}</b></div>
+                <div>Profit Made: <b style={{color:"var(--green)"}}>{tk(c.TotalProfit)}</b></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Modal open={!!selected} onClose={()=>setSelected(null)} title={"Customer: "+(selected?.Name||"")} wide>
+        {selected && (
+          <div>
+            <div className="info-box">
+              <div className="row"><span>Name</span><b>{selected.Name}</b></div>
+              {selected.Phone && <div className="row"><span>Phone</span><span>{selected.Phone}</span></div>}
+              {selected.Address && <div className="row"><span>Address</span><span>{selected.Address}</span></div>}
+              {selected.NID && <div className="row"><span>NID</span><span>{selected.NID}</span></div>}
+              <div className="row"><span>Total Deals</span><b>{selected.TotalTransactions}</b></div>
+              <div className="row"><span>Total Spent</span><b>{tk(selected.TotalSpent)}</b></div>
+              <div className="row"><span>Profit Made</span><b style={{color:"var(--green)"}}>{tk(selected.TotalProfit)}</b></div>
+            </div>
+
+            <div className="inv-section">PURCHASES ({customerSales.length})</div>
+            {customerSales.length ? (
+              <table>
+                <thead><tr><th>Date</th><th>Phone</th><th>Invoice</th><th>Amount</th></tr></thead>
+                <tbody>
+                  {customerSales.map(s=>(
+                    <tr key={s.ID}><td>{s.SellDate}</td><td>{s.Brand} {s.Model}</td><td style={{fontSize:"11px"}}>{s.InvoiceNo}</td><td><b>{tk(s.FinalPrice)}</b></td></tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : <div className="empty">No purchases</div>}
+
+            <div className="inv-section">SOLD TO US ({customerBuys.length})</div>
+            {customerBuys.length ? (
+              <table>
+                <thead><tr><th>Date</th><th>Phone</th><th>Amount</th></tr></thead>
+                <tbody>
+                  {customerBuys.map(p=>(
+                    <tr key={p.ID}><td>{p.BuyDate}</td><td>{p.Brand} {p.Model}</td><td><b>{tk(p.BuyPrice)}</b></td></tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : <div className="empty">No items sold to us</div>}
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
+}
+
+/* ==================== EXPENSES PAGE ==================== */
+function ExpensesPage({data, onAdd, onDelete}) {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const init = {title:"", amount:"", category:"Shop Rent", customCategory:"", paymentMethod:"Cash", date: todayISO(), notes:""};
+  const [form, setForm] = useState(init);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [cat, setCat] = useState("");
+
+  const filtered = data.expenses.filter(e=>{
+    if(from && String(e.Date) < from) return false;
+    if(to && String(e.Date) > to) return false;
+    if(cat && e.Category !== cat) return false;
+    return true;
+  });
+  const total = filtered.reduce((a,e)=>a+Number(e.Amount||0),0);
+
+  const set = (k,v) => setForm(f=>({...f,[k]:v}));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if(!form.title || !form.amount){ alert("Enter title and amount"); return; }
+    setBusy(true);
+    const r = await onAdd(form);
+    setBusy(false);
+    if(r && r.success){ setForm(init); setOpen(false); }
+  };
+
+  return (
+    <div>
+      <Card>
+        <div className="flex-b mb-3">
+          <div>
+            <h2>💸 Expenses</h2>
+            <div style={{fontSize:"12px",color:"var(--muted)"}}>Total (filtered): <b style={{color:"var(--red)"}}>{tk(total)}</b></div>
+          </div>
+          <button className="btn btn-primary" onClick={()=>setOpen(true)}>+ New Expense</button>
+        </div>
+
+        <div className="grid grid-3" style={{marginBottom:"10px"}}>
+          <input type="date" value={from} onChange={e=>setFrom(e.target.value)}/>
+          <input type="date" value={to} onChange={e=>setTo(e.target.value)}/>
+          <select value={cat} onChange={e=>setCat(e.target.value)}>
+            <option value="">All Categories</option>
+            {EXPENSE_CATEGORIES.map(c=><option key={c}>{c}</option>)}
+          </select>
+        </div>
+
+        <div style={{overflowX:"auto"}}>
+          <table>
+            <thead><tr><th>Date</th><th>Title</th><th>Category</th><th>Amount</th><th>Method</th><th></th></tr></thead>
+            <tbody>
+              {filtered.map(e=>(
+                <tr key={e.ID}>
+                  <td style={{color:"var(--muted)"}}>{e.Date}</td>
+                  <td><b>{e.Title}</b></td>
+                  <td><span className="badge b-amber">{e.Category === "Other" && e.CustomCategory ? e.CustomCategory : e.Category}</span></td>
+                  <td style={{color:"var(--red)",fontWeight:700}}>{tk(e.Amount)}</td>
+                  <td>{e.PaymentMethod}</td>
+                  <td><button className="icon-btn" onClick={()=>onDelete("Expenses", e.ID)}>🗑️</button></td>
+                </tr>
+              ))}
+              {!filtered.length && <tr><td colSpan="6" className="empty">No expenses</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      <Modal open={open} onClose={()=>setOpen(false)} title="New Expense">
+        <form onSubmit={submit}>
+          <div className="form-grid">
+            <div className="full"><Label>Title *</Label><input value={form.title} onChange={e=>set("title",e.target.value)}/></div>
+            <div><Label>Amount * (৳)</Label><input type="number" value={form.amount} onChange={e=>set("amount",e.target.value)}/></div>
+            <div><Label>Category</Label>
+              <select value={form.category} onChange={e=>set("category",e.target.value)}>
+                {EXPENSE_CATEGORIES.map(c=><option key={c}>{c}</option>)}
+              </select>
+            </div>
+            {form.category === "Other" && (
+              <div className="full"><Label>Custom Category</Label><input value={form.customCategory} onChange={e=>set("customCategory",e.target.value)} placeholder="Enter category name"/></div>
+            )}
+            <div><Label>Payment Method</Label>
+              <select value={form.paymentMethod} onChange={e=>set("paymentMethod",e.target.value)}>
+                <option>Cash</option><option>bKash</option><option>Nagad</option><option>Bank</option>
+              </select>
+            </div>
+            <div><Label>Date</Label><input type="date" value={form.date} onChange={e=>set("date",e.target.value)}/></div>
+            <div className="full"><Label>Notes</Label><textarea rows="2" value={form.notes} onChange={e=>set("notes",e.target.value)}/></div>
+            <div className="form-actions">
+              <button type="button" className="btn btn-ghost" onClick={()=>setOpen(false)} disabled={busy}>Cancel</button>
+              <button type="submit" className="btn btn-primary" disabled={busy}>{busy?"Saving...":"Save"}</button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+    </div>
+  );
+}
+
+/* ==================== REPORTS PAGE ==================== */
+function ReportsPage({data}) {
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const inRange = d => (!from || d >= from) && (!to || d <= to);
+
+  const sales = data.sales.filter(s => inRange(String(s.SellDate).slice(0,10)));
+  const exp = data.expenses.filter(e => inRange(String(e.Date).slice(0,10)));
+
+  const totalSale = sales.reduce((a,s)=>a+Number(s.FinalPrice||0),0);
+  const totalCost = sales.reduce((a,s)=>a+Number(s.BuyPrice||0),0);
+  const gross = totalSale - totalCost;
+  const totalExp = exp.reduce((a,e)=>a+Number(e.Amount||0),0);
+  const net = gross - totalExp;
+
+  // Daily breakdown
+  const dailyMap = {};
+  sales.forEach(s => {
+    const d = String(s.SellDate).slice(0,10);
+    if(!dailyMap[d]) dailyMap[d] = {date:d, count:0, sale:0, buy:0, profit:0, exp:0};
+    dailyMap[d].count++;
+    dailyMap[d].sale += Number(s.FinalPrice||0);
+    dailyMap[d].buy += Number(s.BuyPrice||0);
+    dailyMap[d].profit += Number(s.Profit||0);
+  });
+  exp.forEach(e => {
+    const d = String(e.Date).slice(0,10);
+    if(!dailyMap[d]) dailyMap[d] = {date:d, count:0, sale:0, buy:0, profit:0, exp:0};
+    dailyMap[d].exp += Number(e.Amount||0);
+  });
+  const daily = Object.values(dailyMap).sort((a,b)=>b.date.localeCompare(a.date));
+
+  const exportCSV = () => {
+    if(!daily.length){ alert("No data"); return; }
+    const headers = ["Date","Sales","Total Sale","Total Buy","Profit","Expenses","Net"];
+    const rows = daily.map(d => [d.date, d.count, d.sale, d.buy, d.profit, d.exp, d.profit-d.exp].join(","));
+    const csv = [headers.join(",")].concat(rows).join("\n");
+    const blob = new Blob(["\ufeff"+csv], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "mobilex-report-"+Date.now()+".csv";
+    a.click();
+  };
+
+  return (
+    <div>
+      <Card>
+        <div className="grid grid-3">
+          <div><Label>From</Label><input type="date" value={from} onChange={e=>setFrom(e.target.value)}/></div>
+          <div><Label>To</Label><input type="date" value={to} onChange={e=>setTo(e.target.value)}/></div>
+          <div style={{display:"flex",gap:"8px",alignItems:"flex-end"}}>
+            <button className="btn btn-ghost" onClick={()=>{setFrom("");setTo("");}}>Reset</button>
+            <button className="btn btn-primary" onClick={exportCSV}>📥 Export CSV</button>
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid grid-4 mb-3">
+        <Stat label="Total Sales" value={tk(totalSale)} color="g"/>
+        <Stat label="Total Cost" value={tk(totalCost)} color="a"/>
+        <Stat label="Gross Profit" value={tk(gross)} color="g"/>
+        <Stat label="Net Profit" value={tk(net)} hint={"Expenses "+tk(totalExp)} color={net>=0?"g":"r"}/>
+      </div>
+
+      <Card>
+        <h3>Daily Breakdown</h3>
+        <div style={{overflowX:"auto"}}>
+          <table>
+            <thead><tr><th>Date</th><th>Sales</th><th>Total Sale</th><th>Total Buy</th><th>Profit</th><th>Expense</th><th>Net</th></tr></thead>
+            <tbody>
+              {daily.map(d=>(
+                <tr key={d.date}>
+                  <td>{d.date}</td>
+                  <td>{d.count}</td>
+                  <td><b>{tk(d.sale)}</b></td>
+                  <td>{tk(d.buy)}</td>
+                  <td style={{color:"var(--green)"}}>{tk(d.profit)}</td>
+                  <td style={{color:"var(--red)"}}>{tk(d.exp)}</td>
+                  <td style={{fontWeight:700,color:(d.profit-d.exp)>=0?"var(--green)":"var(--red)"}}>{tk(d.profit-d.exp)}</td>
+                </tr>
+              ))}
+              {!daily.length && <tr><td colSpan="7" className="empty">No data in this range</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ==================== SETTINGS PAGE ==================== */
+function SettingsPage({data, onSave}) {
+  const settings = {};
+  data.settings.forEach(s => settings[s.Key] = s.Value);
+  const [form, setForm] = useState({
+    ShopName: settings.ShopName || "Mobilex Point",
+    ShopSubtitle: settings.ShopSubtitle || "Buy Sell Exchange",
+    ShopAddress: settings.ShopAddress || "Teribazar, Netrakona, Bangladesh",
+    ShopPhones: settings.ShopPhones || "01601776617, 01915776617",
+    ShopEmail: settings.ShopEmail || "MobilexPoint@gmail.com",
+    InvoicePrefix: settings.InvoicePrefix || "MP",
+    DefaultWarrantyMonths: settings.DefaultWarrantyMonths || "6",
+    WarrantyPolicy: settings.WarrantyPolicy || ""
+  });
+  const [busy, setBusy] = useState(false);
+
+  const set = (k,v) => setForm(f=>({...f,[k]:v}));
+
+  const submit = async e => {
+    e.preventDefault();
+    setBusy(true);
+    await onSave(form);
+    setBusy(false);
+  };
+
+  const downloadBackup = () => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "mobilex-backup-"+todayISO()+".json";
+    a.click();
+  };
+
+  return (
+    <div>
+      <Card>
+        <h2>⚙️ Shop Settings</h2>
+        <form onSubmit={submit}>
+          <div className="form-grid">
+            <div><Label>Shop Name</Label><input value={form.ShopName} onChange={e=>set("ShopName",e.target.value)}/></div>
+            <div><Label>Subtitle</Label><input value={form.ShopSubtitle} onChange={e=>set("ShopSubtitle",e.target.value)}/></div>
+            <div className="full"><Label>Address</Label><input value={form.ShopAddress} onChange={e=>set("ShopAddress",e.target.value)}/></div>
+            <div><Label>Phones</Label><input value={form.ShopPhones} onChange={e=>set("ShopPhones",e.target.value)}/></div>
+            <div><Label>Email</Label><input value={form.ShopEmail} onChange={e=>set("ShopEmail",e.target.value)}/></div>
+            <div><Label>Invoice Prefix</Label><input value={form.InvoicePrefix} onChange={e=>set("InvoicePrefix",e.target.value)}/></div>
+            <div><Label>Default Warranty (Months)</Label><input value={form.DefaultWarrantyMonths} onChange={e=>set("DefaultWarrantyMonths",e.target.value)}/></div>
+            <div className="form-actions">
+              <button type="submit" className="btn btn-primary" disabled={busy}>{busy?"Saving...":"Save Settings"}</button>
+            </div>
+          </div>
+        </form>
+      </Card>
+
+      <Card>
+        <h3>📥 Backup</h3>
+        <p style={{fontSize:"12px",color:"var(--muted)",marginBottom:"10px"}}>Download full backup (JSON) for safety.</p>
+        <button className="btn btn-success" onClick={downloadBackup}>💾 Download Backup</button>
+      </Card>
+
+      <Card>
+        <h3>🔗 Data Source</h3>
+        <a href="https://docs.google.com/spreadsheets" target="_blank" className="btn btn-primary">📊 Open Google Sheet</a>
+      </Card>
+
+      <Card>
+        <div style={{fontSize:"11px",color:"var(--muted)",lineHeight:"1.8"}}>
+          <div>© Mobilex Point — Teribazar, Netrakona</div>
+          <div>☎ 01601776617, 01915776617</div>
+          <div>Version 2.0</div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
